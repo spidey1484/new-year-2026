@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Happy New Year 2026 🎆</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- START SCREEN -->
+<div id="startScreen" class="center">
+  <h2>🎉 A Surprise For You 🎉</h2>
+  <div class="arrow">👇</div>
+  <button onclick="openSurprise()">🎁 Click Here</button>
+</div>
+
+<!-- MAIN SCREEN -->
+<div id="mainScreen" class="hidden">
+  <canvas id="fireworks"></canvas>
+
+  <div class="popup">
+    <h1>Happy New Year 2026</h1>
+    <p id="text"></p>
+  </div>
+</div>
+
+<audio id="music" src="music.mp3" loop></audio>
+<audio id="blast" src="firework.mp3"></audio>
+
+<script src="script.js"></script>
+</body>
+</html>
