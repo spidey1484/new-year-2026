@@ -1,33 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Happy New Year 2026 🎆</title>
+  <meta charset="UTF-8" />
+  <title>Happy New Year 2026</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<!-- START SCREEN -->
-<div id="startScreen" class="center">
-  <h2>🎉 A Surprise For You 🎉</h2>
-  <div class="arrow">👇</div>
-  <button onclick="openSurprise()">🎁 Click Here</button>
-</div>
+  <!-- Custom Cursor -->
+  <div id="cursor"></div>
 
-<!-- MAIN SCREEN -->
-<div id="mainScreen" class="hidden">
+  <!-- Fireworks Canvas -->
   <canvas id="fireworks"></canvas>
 
-  <div class="centerText">
-    <h1 id="title"></h1>
+  <!-- First Screen -->
+  <div class="start-screen" id="startScreen">
+    <h2>🎁 Surprise for you</h2>
+    <p>👇 Click the gift button</p>
+    <button id="startBtn">🎁</button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content hidden" id="content">
+    <h1 id="title">HAPPY NEW YEAR 2026</h1>
     <p id="text"></p>
   </div>
-</div>
 
+  <!-- Sounds -->
+  <audio id="bgMusic" src="music.mp3" loop></audio>
+  <audio id="boomSound" src="firework.mp3"></audio>
 
-<audio id="music" src="music.mp3" crossorigin="anonymous" loop></audio>
-<audio id="blast" src="firework.mp3"></audio>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
