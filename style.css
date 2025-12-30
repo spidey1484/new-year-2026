@@ -110,3 +110,21 @@ canvas {
 @keyframes floatUp {
   to { transform: translateY(-120vh); opacity: 0; }
 }
+.centerText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 3;
+}
+
+#title {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  background: linear-gradient(90deg, gold, orange, red);
+  background-size: 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 4s infinite linear;
+}
