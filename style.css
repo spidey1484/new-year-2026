@@ -29,8 +29,9 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 0;
+  z-index: 1; /* BELOW lanterns */
 }
+
 
 /* Start Screen */
 .start-screen {
@@ -98,31 +99,35 @@ body {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 0;
+  z-index: 2; /* ABOVE fireworks */
 }
+
 
 .lantern {
   position: absolute;
-  bottom: -80px;
-  width: 30px;
-  height: 50px;
-  background: radial-gradient(circle at center, #ffdd88, #ff8800);
-  border-radius: 50% 50% 40% 40%;
-  box-shadow: 0 0 25px rgba(255, 170, 80, 0.8);
-  opacity: 0.9;
+  bottom: -120px;
+  width: 40px;
+  height: 65px;
+  background: radial-gradient(circle at center, #fff2b0 0%, #ff9800 70%);
+  border-radius: 50% 50% 45% 45%;
+  box-shadow:
+    0 0 25px rgba(255,180,80,0.9),
+    0 0 60px rgba(255,140,60,0.6);
+  opacity: 1;
   animation: floatUp linear forwards;
 }
 
 .lantern::after {
   content: "";
   position: absolute;
-  bottom: -10px;
+  bottom: -14px;
   left: 50%;
-  width: 2px;
-  height: 12px;
-  background: rgba(255, 200, 120, 0.8);
+  width: 3px;
+  height: 16px;
+  background: rgba(255,220,160,0.9);
   transform: translateX(-50%);
 }
+
 
 @keyframes floatUp {
   0% {
@@ -133,7 +138,8 @@ body {
     opacity: 1;
   }
   100% {
-    transform: translateX(var(--drift)) translateY(-120vh) scale(1.1);
+    transform: translateX(var(--drift)) translateY(-140vh) scale(1.15);
     opacity: 0;
   }
 }
+
