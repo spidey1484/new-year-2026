@@ -1,22 +1,34 @@
 const music = document.getElementById("music");
 const blast = document.getElementById("blast");
 
+let audioCtx, analyser, source, dataArray, beatPower = 0;
+
 function openSurprise() {
   document.getElementById("startScreen").style.display = "none";
   document.getElementById("mainScreen").style.display = "block";
 
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 256;
+
+  source = audioCtx.createMediaElementSource(music);
+  source.connect(analyser);
+  analyser.connect(audioCtx.destination);
+
+  dataArray = new Uint8Array(analyser.frequencyBinCount);
+
   music.volume = 0.5;
-  music.play().catch(() => {
-    document.body.addEventListener("click", () => music.play(), { once: true });
-  });
+  music.play();
 
   startTyping();
   startFireworks();
   setTimeout(popupBurst, 900);
 }
 
-/* TYPING TEXT (200 words approx) */
-const message = `Happy New Year 2026! As this beautiful year begins, may your life be filled with happiness, peace, confidence, and endless positive energy. Let every sunrise inspire new hopes and every night bring calm satisfaction. May this year guide you toward success, good health, meaningful relationships, and inner growth. Let challenges shape you stronger and victories remind you of your potential. Surround yourself with kindness, gratitude, and people who lift you higher. May laughter brighten your days and determination fuel your dreams. Believe in yourself, trust your journey, and never stop moving forward. Wishing you a year full of joy, progress, unforgettable memories, and moments worth cherishing forever.`;
+/* TYPING */
+const message = `Happy New Year 2026! As this new year begins, may your life be filled with happiness, peace, confidence, and positive energy. Let every sunrise bring new hope and every night bring calm satisfaction. May success, good health, and meaningful relationships stay with you throughout the year. Let challenges shape your strength and victories remind you of your potential. Keep believing in yourself, stay consistent, and never stop moving forward. May 2026 gift you unforgettable moments, genuine smiles, and memories worth cherishing forever.
+
+— Shubham`;
 
 let i = 0;
 function startTyping() {
@@ -51,6 +63,14 @@ function popupBurst() {
     document.body.appendChild(p);
     setTimeout(() => p.remove(), 700);
   }
+}
+
+/* BEAT DETECTION */
+function detectBeat() {
+  analyser.getByteFrequencyData(dataArray);
+  let bass = 0;
+  for (let i = 0; i < 10; i++) bass += dataArray[i];
+  beatPower = bass / 10;
 }
 
 /* FIREWORKS */
@@ -102,7 +122,8 @@ function startFireworks() {
     blast.currentTime = 0;
     blast.play();
     screenShake();
-    for (let i = 0; i < 280; i++) {
+    let strength = beatPower > 160 ? 420 : 280;
+    for (let i = 0; i < strength; i++) {
       particles.push(new Particle(x, y));
     }
   }
@@ -123,7 +144,13 @@ function startFireworks() {
   }
 
   setTimeout(fire2026, 1500);
-  setInterval(() => explode(Math.random() * canvas.width, Math.random() * canvas.height / 2), 900);
+
+  setInterval(() => {
+    detectBeat();
+    if (beatPower > 140) {
+      explode(Math.random() * canvas.width, Math.random() * canvas.height / 2);
+    }
+  }, 120);
 
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
