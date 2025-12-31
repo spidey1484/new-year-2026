@@ -2,29 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Surprise</title>
+  <title>Happy New Year 2026</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <!-- FIRST PAGE -->
-  <div class="first-page">
-    <h1 class="main-text">Surprise for you 👇</h1>
-    <div class="hand">👇</div>
-    <button id="startBtn">🎁 Gift</button>
-  </div>
+  <!-- Custom Cursor -->
+  <div id="cursor"></div>
 
-  <!-- FIREWORK CANVAS -->
+  <!-- Fireworks Canvas -->
   <canvas id="fireworks"></canvas>
 
-  <!-- SECOND PAGE CONTENT -->
-  <div class="content">
-    <p id="typingText"></p>
+  <!-- First Screen -->
+  <div class="start-screen" id="startScreen">
+    <h2>🎁 Surprise for you</h2>
+    <p>👇 Click the gift button</p>
+    <button id="startBtn">🎁</button>
   </div>
 
-  <!-- MUSIC -->
-  <audio id="bgMusic" src="music.mp3"></audio>
+  <!-- Main Content -->
+  <div class="content hidden" id="content">
+    <h1 id="title">HAPPY NEW YEAR 2026</h1>
+    <p id="text"></p>
+  </div>
+
+  <!-- Sounds -->
+  <audio id="bgMusic" src="music.mp3" loop></audio>
+  <audio id="boomSound" src="firework.mp3"></audio>
 
   <script src="script.js"></script>
 </body>
