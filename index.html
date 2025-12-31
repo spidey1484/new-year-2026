@@ -2,38 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Happy New Year 2026</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Custom Cursor -->
-  <div id="cursor"></div>
-
-  <!-- Fireworks -->
+  <!-- FIREWORK CANVAS -->
   <canvas id="fireworks"></canvas>
 
-  <!-- Lanterns -->
-  <div id="lantern-container"></div>
-
-  <!-- PAGE 1 -->
-  <div class="start-screen page-one" id="startScreen">
-    <h2>🎁 Surprise for you</h2>
-    <p>👇 Tap the gift</p>
-    <button id="startBtn">🎁</button>
+  <!-- MAIN CONTENT -->
+  <div class="content">
+    <h1 id="title">🎆 HAPPY NEW YEAR 2026 🎆</h1>
+    <p class="hint">Surprise for you 👇</p>
+    <button id="startBtn">🎁 CLICK ME</button>
+    <p id="typingText"></p>
   </div>
 
-  <!-- PAGE 2 -->
-  <div class="content hidden page-two" id="content">
-    <h1 id="title">HAPPY NEW YEAR 2026</h1>
-    <p id="text"></p>
-  </div>
-
-  <!-- Sounds -->
-  <audio id="bgMusic" src="music.mp3" loop></audio>
-  <audio id="boomSound" src="firework.mp3"></audio>
+  <!-- MUSIC -->
+  <audio id="bgMusic" src="music.mp3"></audio>
 
   <script src="script.js"></script>
 </body>
