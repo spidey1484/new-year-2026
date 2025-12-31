@@ -1,134 +1,138 @@
-const canvas = document.getElementById("fireworks");
-const ctx = canvas.getContext("2d");
-const btn = document.getElementById("startBtn");
-const typingText = document.getElementById("typingText");
-const music = document.getElementById("bgMusic");
-const firstPage = document.querySelector(".first-page");
+/* Cursor */
+const cursor = document.getElementById("cursor");
+document.addEventListener("mousemove", e => {
+  cursor.style.left = e.pageX + "px";
+  cursor.style.top = e.pageY + "px";
+});
 
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+/* Elements */
+const startBtn = document.getElementById("startBtn");
+const startScreen = document.getElementById("startScreen");
+const content = document.getElementById("content");
+const bgMusic = document.getElementById("bgMusic");
+const boomSound = document.getElementById("boomSound");
+const textEl = document.getElementById("text");
 
-/* ===== FIRE SOUND ===== */
-const boom = new Audio("firecracker.mp3");
-boom.volume = 0.6;
+/* Paragraph (100 words, writer name at end) */
+const paragraph = `
+As the clock turns and a new chapter begins, may 2026 bring peace, growth, and unforgettable moments into your life.
+Let this year be filled with courage to chase dreams, strength to face challenges, and wisdom to appreciate small joys.
+Every sunrise is a fresh opportunity, every step a chance to become better than yesterday.
+May laughter stay longer, worries fade faster, and hope shine brighter in every heart.
+Welcome new beginnings with confidence and gratitude, because the best stories are yet to be written.
 
-/* ===== REALISTIC FIREWORK ===== */
-class Firework {
-  constructor() {
-    this.x = Math.random() * canvas.width;
-    this.y = canvas.height;
-    this.vy = -8;
-    this.exploded = false;
-    this.particles = [];
-  }
+— Shubham
+`;
 
-  update() {
-    if (!this.exploded) {
-      this.y += this.vy;
-      if (this.y < canvas.height * 0.45) this.explode();
-    } else {
-      this.particles.forEach(p => p.update());
-    }
-  }
+/* Start Button */
+startBtn.addEventListener("click", () => {
+  startScreen.style.display = "none";
+  content.classList.remove("hidden");
 
-  explode() {
-    this.exploded = true;
-    boom.currentTime = 0;
-    boom.play();
-    for (let i = 0; i < 55; i++) {
-      this.particles.push(new Particle(this.x, this.y));
-    }
-  }
+  bgMusic.play();
+  startFireworks(true);
 
-  draw() {
-    if (!this.exploded) {
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(this.x, this.y, 3, 6);
-    } else {
-      this.particles.forEach(p => p.draw());
-    }
-  }
-}
+  setTimeout(typeText, 1500);
+});
 
-class Particle {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.vx = (Math.random() - 0.5) * 6;
-    this.vy = (Math.random() - 0.5) * 6;
-    this.alpha = 1;
-    this.color = `hsl(${Math.random()*360},100%,60%)`;
-  }
-
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
-    this.alpha -= 0.025;
-  }
-
-  draw() {
-    ctx.globalAlpha = this.alpha;
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalAlpha = 1;
-  }
-}
-
-let fireworks = [];
-
-function animateFireworks() {
-  ctx.fillStyle = "rgba(0,0,0,0.25)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  fireworks.forEach((f, i) => {
-    f.update();
-    f.draw();
-    if (f.exploded && f.particles.every(p => p.alpha <= 0)) {
-      fireworks.splice(i, 1);
-    }
-  });
-
-  requestAnimationFrame(animateFireworks);
-}
-
-/* ===== LANTERNS ===== */
-function createLantern() {
-  const l = document.createElement("div");
-  l.className = "lantern";
-  l.style.left = Math.random() * 100 + "vw";
-  l.style.animationDuration = 10 + Math.random() * 6 + "s";
-  document.body.appendChild(l);
-  setTimeout(() => l.remove(), 16000);
-}
-
-/* ===== TYPING ===== */
-const paragraph = `May the coming year bring peace, strength, and clarity into your life.
-May every challenge shape you wiser and every success humble you.
-Keep believing, keep moving, and never stop dreaming.
-New beginnings always start with hope.
-
-— Shubham`;
-
+/* Typing Effect */
 let i = 0;
 function typeText() {
   if (i < paragraph.length) {
-    typingText.innerHTML += paragraph.charAt(i++);
+    textEl.innerHTML += paragraph.charAt(i);
+    i++;
     setTimeout(typeText, 35);
   }
 }
 
-/* ===== START BUTTON ===== */
-btn.onclick = () => {
-  firstPage.style.display = "none";
+/* Fireworks */
+function startFireworks(playSoundOnce) {
+  const canvas = document.getElementById("fireworks");
+  const ctx = canvas.getContext("2d");
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
 
-  music.loop = true;
-  music.play();
+  let rockets = [];
+  let particles = [];
+  let soundPlayed = false;
 
-  animateFireworks();
-  setInterval(() => fireworks.push(new Firework()), 1200);
-  setInterval(createLantern, 1800);
+  class Rocket {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = canvas.height;
+      this.vy = -(Math.random() * 8 + 10);
+      this.color = `hsl(${Math.random() * 360},100%,70%)`;
+    }
+    update() {
+      this.y += this.vy;
+      this.vy += 0.15;
+      if (this.vy >= 0) {
+        explode(this.x, this.y, this.color);
+        return true;
+      }
+      return false;
+    }
+    draw() {
+      ctx.fillStyle = this.color;
+      ctx.fillRect(this.x, this.y, 2, 12);
+    }
+  }
 
-  typeText();
-};
+  class Particle {
+    constructor(x, y, color) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 6 + 2;
+      this.x = x;
+      this.y = y;
+      this.vx = Math.cos(angle) * speed;
+      this.vy = Math.sin(angle) * speed;
+      this.life = 100;
+      this.color = color;
+    }
+    update() {
+      this.vx *= 0.98;
+      this.vy *= 0.98;
+      this.vy += 0.04;
+      this.x += this.vx;
+      this.y += this.vy;
+      this.life--;
+    }
+    draw() {
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function explode(x, y, color) {
+    if (!soundPlayed && playSoundOnce) {
+      boomSound.play();
+      soundPlayed = true;
+    }
+    for (let i = 0; i < 150; i++) {
+      particles.push(new Particle(x, y, color));
+    }
+  }
+
+  setInterval(() => rockets.push(new Rocket()), 1200);
+
+  function animate() {
+    ctx.fillStyle = "rgba(0,0,0,0.25)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    rockets = rockets.filter(r => {
+      r.draw();
+      return !r.update();
+    });
+
+    particles = particles.filter(p => {
+      p.update();
+      p.draw();
+      return p.life > 0;
+    });
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+}
