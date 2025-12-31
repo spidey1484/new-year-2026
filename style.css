@@ -5,84 +5,92 @@
 }
 
 body {
+  background: radial-gradient(circle at bottom, #020111, #000000);
+  color: white;
   overflow: hidden;
-  font-family: "Poppins", sans-serif;
-  background: #000;
+  font-family: Arial, sans-serif;
 }
 
-/* ===== FIRST PAGE ONLY ===== */
-.first-page {
+/* Cursor */
+#cursor {
   position: fixed;
+  width: 18px;
+  height: 18px;
+  border: 2px solid gold;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s;
+  z-index: 9999;
+}
+
+/* Fireworks */
+#fireworks {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+/* Start Screen */
+.start-screen {
+  position: absolute;
   inset: 0;
-  background: url("first-bg.jpg") center/cover no-repeat;
-  z-index: 5;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
+  z-index: 2;
 }
 
-.main-text {
-  font-size: 2.4rem;
-  color: #fff;
-  margin-bottom: 15px;
+.start-screen h2 {
+  font-size: 2rem;
 }
 
-.hand {
-  font-size: 2.2rem;
-  animation: bounce 1s infinite;
-}
-
-@keyframes bounce {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(10px); }
-}
-
-.first-page button {
-  margin-top: 25px;
-  font-size: 1.4rem;
-  padding: 14px 38px;
-  border-radius: 40px;
+.start-screen button {
+  margin-top: 20px;
+  font-size: 2.5rem;
+  padding: 15px 30px;
+  border-radius: 50%;
   border: none;
   cursor: pointer;
-  background: linear-gradient(45deg, gold, orange);
 }
 
-/* ===== FIREWORK LAYER ===== */
-#fireworks {
-  position: fixed;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-}
-
-/* ===== SECOND PAGE CONTENT ===== */
+/* Content */
 .content {
-  position: relative;
-  z-index: 4;
-  color: white;
+  position: absolute;
+  inset: 0;
+  padding: 60px;
   text-align: center;
-  padding-top: 20vh;
-  max-width: 90%;
+  z-index: 1;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Title */
+#title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3.5rem;
+  margin-bottom: 30px;
+  background: linear-gradient(90deg, gold, orange, red);
+  background-size: 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: glow 3s infinite;
+}
+
+@keyframes glow {
+  50% {
+    text-shadow: 0 0 30px rgba(255,180,80,0.8);
+  }
+}
+
+/* Paragraph */
+#text {
+  font-size: 1.2rem;
+  max-width: 900px;
   margin: auto;
-  line-height: 1.7;
-}
-
-/* ===== LANTERNS (UNCHANGED DESIGN) ===== */
-.lantern {
-  position: fixed;
-  bottom: -120px;
-  width: 55px;
-  height: 75px;
-  background: radial-gradient(circle at center, #ffd966, #ff6600);
-  border-radius: 45% 45% 35% 35%;
-  animation: floatUp linear infinite;
-  z-index: 3;
-  opacity: 0.9;
-}
-
-@keyframes floatUp {
-  from { transform: translateY(0); }
-  to { transform: translateY(-130vh); }
+  line-height: 1.8;
 }
