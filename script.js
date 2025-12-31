@@ -1,197 +1,148 @@
-/* ================= CURSOR ================= */
-const cursor = document.getElementById("cursor");
-document.addEventListener("mousemove", e => {
-  cursor.style.left = e.pageX + "px";
-  cursor.style.top = e.pageY + "px";
-});
-
-/* ================= ELEMENTS ================= */
+// ================== BASIC SETUP ==================
 const startBtn = document.getElementById("startBtn");
-const startScreen = document.getElementById("startScreen");
-const content = document.getElementById("content");
-const bgMusic = document.getElementById("bgMusic");
-const boomSound = document.getElementById("boomSound");
-const textEl = document.getElementById("text");
+const typingText = document.getElementById("typingText");
+const music = document.getElementById("bgMusic");
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
 
-/* ================= PARAGRAPH ================= */
-const paragraph = `
-As a new year begins, may 2026 bring peace, success, and happiness into your life.
-Let every challenge shape you stronger and every moment teach gratitude.
-Dream bigger, smile louder, and move forward with courage and hope.
-May this year reward your efforts and fill your days with warmth and positivity.
-Welcome fresh beginnings and endless possibilities with confidence and belief.
-`;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-/* ================= LANTERNS ================= */
-const lanternContainer = document.getElementById("lantern-container");
+// ================== FIREWORK SOUND ==================
+const fireSound = new Audio("firecracker.mp3");
+fireSound.volume = 0.6;
+
+// ================== MUSIC LOOP (10s) ==================
+music.loop = true;
+
+// ================== LANTERNS ==================
 function createLantern() {
-  const l = document.createElement("div");
-  l.className = "lantern";
-  l.style.left = Math.random() * 100 + "vw";
-  l.style.animationDuration = 20 + Math.random() * 10 + "s";
-  l.style.setProperty("--drift", (Math.random() - 0.5) * 160 + "px");
-  lanternContainer.appendChild(l);
-  setTimeout(() => l.remove(), 35000);
+  const lantern = document.createElement("div");
+  lantern.className = "lantern";
+  lantern.style.left = Math.random() * 100 + "vw";
+  lantern.style.animationDuration = 10 + Math.random() * 5 + "s";
+  document.body.appendChild(lantern);
+
+  setTimeout(() => lantern.remove(), 15000);
 }
 
-/* ================= SOUND LOOP ================= */
-let fireLoop = null;
+// ================== FIREWORK CLASSES ==================
+class Rocket {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = canvas.height;
+    this.vy = Math.random() * -5 - 8;
+    this.exploded = false;
+    this.particles = [];
+  }
 
-/* ================= START CLICK ================= */
-startBtn.addEventListener("click", () => {
-  startScreen.style.display = "none";
-  content.classList.remove("hidden");
+  update() {
+    if (!this.exploded) {
+      this.y += this.vy;
+      if (this.y < canvas.height / 2) {
+        this.explode();
+      }
+    } else {
+      this.particles.forEach(p => p.update());
+    }
+  }
 
-  bgMusic.play();
+  explode() {
+    this.exploded = true;
+    fireSound.currentTime = 0;
+    fireSound.play();
 
-  boomSound.currentTime = 0;
-  boomSound.play();
-  fireLoop = setInterval(() => {
-    boomSound.currentTime = 0;
-    boomSound.play();
-  }, 10000);
+    for (let i = 0; i < 60; i++) {
+      this.particles.push(new Particle(this.x, this.y));
+    }
+  }
 
-  setInterval(createLantern, 1800);
-  startFireworks();
+  draw() {
+    if (!this.exploded) {
+      ctx.fillStyle = "white";
+      ctx.fillRect(this.x, this.y, 3, 6);
+    } else {
+      this.particles.forEach(p => p.draw());
+    }
+  }
+}
 
-  setTimeout(typeText, 2000);
-});
+class Particle {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.vx = (Math.random() - 0.5) * 6;
+    this.vy = (Math.random() - 0.5) * 6;
+    this.alpha = 1;
+    this.color = `hsl(${Math.random() * 360},100%,60%)`;
+  }
 
-/* ================= TYPING EFFECT ================= */
-let i = 0;
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.alpha -= 0.02;
+  }
+
+  draw() {
+    ctx.globalAlpha = this.alpha;
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+}
+
+// ================== FIREWORK LOOP ==================
+let rockets = [];
+
+function animateFireworks() {
+  ctx.fillStyle = "rgba(0,0,0,0.25)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  rockets.forEach((r, i) => {
+    r.update();
+    r.draw();
+    if (r.exploded && r.particles.every(p => p.alpha <= 0)) {
+      rockets.splice(i, 1);
+    }
+  });
+
+  requestAnimationFrame(animateFireworks);
+}
+
+// ================== TYPING TEXT ==================
+const paragraph = `Happy New Year 2026 🎉  
+May this year bring light, peace, success, and unforgettable moments into your life. 
+Let every sunrise remind you of new opportunities and every night close with gratitude.
+Dream bigger, smile wider, and never stop believing in yourself.
+Cheers to growth, happiness, and new beginnings.;
+
+let index = 0;
 function typeText() {
-  if (i < paragraph.length) {
-    textEl.innerHTML += paragraph.charAt(i);
-    i++;
+  if (index < paragraph.length) {
+    typingText.innerHTML += paragraph.charAt(index);
+    index++;
     setTimeout(typeText, 35);
   }
 }
 
-/* ================= FIREWORK TEXT 2026 ================= */
-function fireworkText2026(ctx, canvas, callback) {
-  const tempCanvas = document.createElement("canvas");
-  const tctx = tempCanvas.getContext("2d");
+// ================== START BUTTON ==================
+startBtn.addEventListener("click", () => {
+  startBtn.style.display = "none";
 
-  tempCanvas.width = canvas.width;
-  tempCanvas.height = canvas.height;
+  // Play music
+  music.play();
 
-  tctx.fillStyle = "white";
-  tctx.font = "bold 180px Orbitron";
-  tctx.textAlign = "center";
-  tctx.fillText("2026", canvas.width / 2, canvas.height / 2);
+  // Start lanterns immediately
+  for (let i = 0; i < 5; i++) createLantern();
+  setInterval(createLantern, 1800);
 
-  const data = tctx.getImageData(0, 0, canvas.width, canvas.height).data;
-  const points = [];
+  // Start fireworks immediately
+  setInterval(() => {
+    rockets.push(new Rocket());
+  }, 1200);
 
-  for (let y = 0; y < canvas.height; y += 6) {
-    for (let x = 0; x < canvas.width; x += 6) {
-      const index = (y * canvas.width + x) * 4;
-      if (data[index + 3] > 150) points.push({ x, y });
-    }
-  }
-
-  let p = 0;
-  const draw = setInterval(() => {
-    if (p >= points.length) {
-      clearInterval(draw);
-      setTimeout(callback, 1500);
-      return;
-    }
-    explode(points[p].x, points[p].y, `hsl(${Math.random()*360},100%,70%)`);
-    p += 4;
-  }, 20);
-}
-
-/* ================= FIREWORKS ================= */
-function startFireworks() {
-  const canvas = document.getElementById("fireworks");
-  const ctx = canvas.getContext("2d");
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-
-  let rockets = [];
-  let particles = [];
-  let textDone = false;
-
-  class Rocket {
-    constructor() {
-      this.x = Math.random() * canvas.width;
-      this.y = canvas.height;
-      this.vy = -(Math.random() * 8 + 10);
-      this.color = `hsl(${Math.random() * 360},100%,70%)`;
-    }
-    update() {
-      this.y += this.vy;
-      this.vy += 0.15;
-      if (this.vy >= 0) {
-        explode(this.x, this.y, this.color);
-        return true;
-      }
-      return false;
-    }
-    draw() {
-      ctx.fillStyle = this.color;
-      ctx.fillRect(this.x, this.y, 2, 12);
-    }
-  }
-
-  class Particle {
-    constructor(x, y, color) {
-      const a = Math.random() * Math.PI * 2;
-      const s = Math.random() * 6 + 2;
-      this.x = x;
-      this.y = y;
-      this.vx = Math.cos(a) * s;
-      this.vy = Math.sin(a) * s;
-      this.life = 100;
-      this.color = color;
-    }
-    update() {
-      this.vx *= 0.98;
-      this.vy *= 0.98;
-      this.vy += 0.04;
-      this.x += this.vx;
-      this.y += this.vy;
-      this.life--;
-    }
-    draw() {
-      ctx.fillStyle = this.color;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-  window.explode = function(x, y, color) {
-    for (let i = 0; i < 150; i++) {
-      particles.push(new Particle(x, y, color));
-    }
-  };
-
-  setTimeout(() => {
-    if (!textDone) {
-      fireworkText2026(ctx, canvas, () => {
-        textDone = true;
-        setInterval(() => rockets.push(new Rocket()), 1200);
-      });
-    }
-  }, 800);
-
-  (function animate() {
-    ctx.fillStyle = "rgba(0,0,0,0.25)";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    rockets = rockets.filter(r => {
-      r.draw();
-      return !r.update();
-    });
-
-    particles = particles.filter(p => {
-      p.update();
-      p.draw();
-      return p.life > 0;
-    });
-
-    requestAnimationFrame(animate);
-  })();
-}
+  animateFireworks();
+  typeText();
+});
