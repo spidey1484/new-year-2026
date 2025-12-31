@@ -20,8 +20,6 @@ Let this year be filled with courage to chase dreams, strength to face challenge
 Every sunrise is a fresh opportunity, every step a chance to become better than yesterday.
 May laughter stay longer, worries fade faster, and hope shine brighter in every heart.
 Welcome new beginnings with confidence and gratitude, because the best stories are yet to be written.
-
-— Shubham
 `;
 
 /* Start Button */
@@ -136,3 +134,24 @@ function startFireworks(playSoundOnce) {
   }
   animate();
 }
+const lanternContainer = document.getElementById("lantern-container");
+
+function createLantern() {
+  const lantern = document.createElement("div");
+  lantern.className = "lantern";
+
+  lantern.style.left = Math.random() * 100 + "vw";
+  lantern.style.animationDuration = 18 + Math.random() * 12 + "s";
+  lantern.style.setProperty("--drift", `${(Math.random() - 0.5) * 120}px`);
+
+  lanternContainer.appendChild(lantern);
+
+  setTimeout(() => {
+    lantern.remove();
+  }, 30000);
+}
+
+/* Start lanterns AFTER button click */
+startBtn.addEventListener("click", () => {
+  setInterval(createLantern, 2000);
+});
