@@ -5,7 +5,6 @@
 }
 
 body {
-  background: radial-gradient(circle at bottom, #020111, #000000);
   color: white;
   overflow: hidden;
   font-family: Arial, sans-serif;
@@ -20,20 +19,58 @@ body {
   border-radius: 50%;
   pointer-events: none;
   transform: translate(-50%, -50%);
-  transition: transform 0.1s;
   z-index: 9999;
 }
 
 /* Fireworks */
 #fireworks {
   position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1; /* BELOW lanterns */
+  inset: 0;
+  z-index: 1;
 }
 
+/* Lanterns */
+#lantern-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
 
-/* Start Screen */
+.lantern {
+  position: absolute;
+  bottom: -120px;
+  width: 40px;
+  height: 65px;
+  background: radial-gradient(circle, #fff2b0, #ff9800);
+  border-radius: 50% 50% 45% 45%;
+  box-shadow: 0 0 30px rgba(255,180,80,0.9);
+  animation: floatUp linear forwards;
+}
+
+.lantern::after {
+  content: "";
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  width: 3px;
+  height: 16px;
+  background: rgba(255,220,160,0.9);
+  transform: translateX(-50%);
+}
+
+@keyframes floatUp {
+  to {
+    transform: translateY(-140vh) translateX(var(--drift));
+    opacity: 0;
+  }
+}
+
+/* PAGE 1 */
+.page-one {
+  background: radial-gradient(circle at top, #1a0033, #000);
+}
+
 .start-screen {
   position: absolute;
   inset: 0;
@@ -41,29 +78,37 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 2;
+  z-index: 3;
 }
 
 .start-screen h2 {
-  font-size: 2rem;
+  font-size: 3rem;
+}
+
+.start-screen p {
+  font-size: 1.6rem;
 }
 
 .start-screen button {
-  margin-top: 20px;
-  font-size: 2.5rem;
-  padding: 15px 30px;
+  margin-top: 25px;
+  font-size: 3.5rem;
+  padding: 22px 45px;
   border-radius: 50%;
   border: none;
   cursor: pointer;
 }
 
-/* Content */
+/* PAGE 2 */
+.page-two {
+  background: radial-gradient(circle at bottom, #020111, #001133);
+}
+
 .content {
   position: absolute;
   inset: 0;
   padding: 60px;
   text-align: center;
-  z-index: 1;
+  z-index: 3;
 }
 
 .hidden {
@@ -84,7 +129,7 @@ body {
 
 @keyframes glow {
   50% {
-    text-shadow: 0 0 30px rgba(255,180,80,0.8);
+    text-shadow: 0 0 35px rgba(255,180,80,0.9);
   }
 }
 
@@ -95,51 +140,3 @@ body {
   margin: auto;
   line-height: 1.8;
 }
-#lantern-container {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2; /* ABOVE fireworks */
-}
-
-
-.lantern {
-  position: absolute;
-  bottom: -120px;
-  width: 40px;
-  height: 65px;
-  background: radial-gradient(circle at center, #fff2b0 0%, #ff9800 70%);
-  border-radius: 50% 50% 45% 45%;
-  box-shadow:
-    0 0 25px rgba(255,180,80,0.9),
-    0 0 60px rgba(255,140,60,0.6);
-  opacity: 1;
-  animation: floatUp linear forwards;
-}
-
-.lantern::after {
-  content: "";
-  position: absolute;
-  bottom: -14px;
-  left: 50%;
-  width: 3px;
-  height: 16px;
-  background: rgba(255,220,160,0.9);
-  transform: translateX(-50%);
-}
-
-
-@keyframes floatUp {
-  0% {
-    transform: translateX(0) translateY(0) scale(0.9);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(var(--drift)) translateY(-140vh) scale(1.15);
-    opacity: 0;
-  }
-}
-
