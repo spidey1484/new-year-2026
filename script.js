@@ -135,23 +135,25 @@ function startFireworks(playSoundOnce) {
   animate();
 }
 const lanternContainer = document.getElementById("lantern-container");
+let lanternInterval = null;
 
 function createLantern() {
   const lantern = document.createElement("div");
   lantern.className = "lantern";
 
   lantern.style.left = Math.random() * 100 + "vw";
-  lantern.style.animationDuration = 18 + Math.random() * 12 + "s";
-  lantern.style.setProperty("--drift", `${(Math.random() - 0.5) * 120}px`);
+  lantern.style.animationDuration = 20 + Math.random() * 10 + "s";
+  lantern.style.setProperty("--drift", `${(Math.random() - 0.5) * 160}px`);
 
   lanternContainer.appendChild(lantern);
 
-  setTimeout(() => {
-    lantern.remove();
-  }, 30000);
+  setTimeout(() => lantern.remove(), 35000);
 }
 
-/* Start lanterns AFTER button click */
+/* Start lanterns ON CLICK */
 startBtn.addEventListener("click", () => {
-  setInterval(createLantern, 2000);
+  if (!lanternInterval) {
+    lanternInterval = setInterval(createLantern, 1800);
+  }
 });
+
